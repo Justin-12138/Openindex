@@ -1,0 +1,70 @@
+# md2tree Configuration File
+
+[llm]
+# LLM API Configuration
+api_key = ""  # Leave empty to use environment variable
+api_base = ""  # Leave empty to use environment variable
+model = "glm-4.7"  # Default model
+temperature = 0.7  # Default temperature for generation
+
+# LLM Concurrency Control
+max_concurrent_requests = 5  # Maximum number of concurrent LLM requests
+request_timeout = 120  # Request timeout in seconds
+max_retries = 3  # Maximum number of retries for failed requests
+retry_delay = 1.0  # Delay between retries in seconds
+
+[mineru]
+# MinerU Configuration
+server_url = ""  # Leave empty to use environment variable (MINERU_SERVER_URL)
+api_url = ""  # Leave empty to use environment variable (MINERU_API_URL)
+backend = "vlm-http-client"  # MinerU backend type
+output_dir = "./parsed"  # Default output directory for parsed files
+executable = "mineru"  # MinerU executable path (or full path)
+extra_args = []  # Extra command line arguments, e.g. ["--timeout", "300"]
+
+[thinning]
+# Tree Thinning Configuration
+enabled = false  # Whether to enable tree thinning by default
+min_token_threshold = 5000  # Minimum token count to keep node separate
+
+[summary]
+# Summary Generation Configuration
+enabled = false  # Whether to generate summaries by default
+summary_token_threshold = 200  # Use original text if below this token count
+include_text_in_summary = false  # Whether to keep text field after summary
+
+[output]
+# Output Configuration
+add_node_id = true  # Whether to add node_id by default
+pretty_print = true  # Whether to pretty print JSON output
+
+[app]
+# Web Application Configuration
+upload_dir = "./uploads"  # Directory for uploaded files
+max_file_size = 104857600  # Maximum file size in bytes (100MB)
+allowed_extensions = [".pdf"]  # Allowed file extensions
+max_message_length = 10000  # Maximum message length in characters
+parser_cache_size = 50  # Maximum number of parser instances to cache (LRU)
+max_concurrent_parsing = 2  # Maximum number of concurrent parsing tasks
+max_filename_length = 255  # Maximum filename length
+max_query_length = 5000  # Maximum query length in characters
+
+[query]
+# Query Service Configuration
+max_history_messages = 10  # Maximum number of conversation history messages to keep
+text_preview_length = 200  # Text preview length in characters
+summary_preview_length = 100  # Summary preview length in characters
+
+[conversation]
+# Conversation Configuration
+title_max_length = 30  # Maximum length for auto-generated conversation titles
+
+[api]
+# API Server Configuration
+host = "0.0.0.0"  # API server host
+port = 8090  # API server port
+
+[logging]
+# Logging Configuration
+level = "INFO"  # Log level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"  # Log format

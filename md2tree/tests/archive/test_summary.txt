@@ -1,0 +1,10 @@
+测试验证完成
+
+所有测试文件已通过语法检查，测试框架已就绪。
+
+要运行完整测试，需要先安装 pytest：
+  python -m ensurepip --upgrade
+  python -m pip install pytest pytest-cov pytest-asyncio
+
+然后运行：
+  pytest md2tree/tests/ -v

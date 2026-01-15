@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test PDF.js</title>
+</head>
+<body>
+    <h1>PDF.js Test</h1>
+    <canvas id="pdf-canvas"></canvas>
+
+    <script type="module">
+        import * as pdfjsLib from 'pdfjs-dist';
+
+        // 配置 PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
+
+        console.log('PDF.js version:', pdfjsLib.version);
+        console.log('Worker src:', pdfjsLib.GlobalWorkerOptions.workerSrc);
+
+        // 测试PDF加载
+        async function testPdf() {
+            try {
+                const response = await fetch('/api/documents/b01394a3/pdf');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const arrayBuffer = await response.arrayBuffer();
+                console.log('PDF data size:', arrayBuffer.byteLength);
+
+                const loadingTask = pdfjsLib.getDocument({
+                    data: arrayBuffer,
+                    cMapUrl: `https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/`,
+                    cMapPacked: true,
+                });
+
+                const pdfDoc = await loadingTask.promise;
+                console.log('PDF loaded, pages:', pdfDoc.numPages);
+
+                // 渲染第一页
+                const page = await pdfDoc.getPage(1);
+                const viewport = page.getViewport({ scale: 1.2 });
+
+                const canvas = document.getElementById('pdf-canvas');
+                const context = canvas.getContext('2d');
+
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                canvas.style.width = viewport.width + 'px';
+                canvas.style.height = viewport.height + 'px';
+
+                context.fillStyle = '#ffffff';
+                context.fillRect(0, 0, viewport.width, viewport.height);
+
+                const renderTask = page.render({
+                    canvasContext: context,
+                    viewport: viewport,
+                });
+
+                await renderTask.promise;
+                console.log('Page rendered successfully');
+
+            } catch (error) {
+                console.error('PDF test failed:', error);
+                document.body.innerHTML += '<p style="color: red;">Error: ' + error.message + '</p>';
+            }
+        }
+
+        testPdf();
+    </script>
+</body>
+</html>
